@@ -1,0 +1,155 @@
+<html>
+<head></head>
+<body>
+<svg id="svg" width="100%" height="100%"></svg>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+
+var xx = 50;
+var yy = 50;
+var csize = 20;
+var bsize = 4;
+var brad = 8;
+
+var laby = (() => {
+  var mkcol = () => Array(yy).fill(0).map(() => ({
+    v: false,
+    ws: { n: true, s: true, w: true, e: true }
+  }));
+  return r = Array(xx).fill(0).map(mkcol);
+})();
+
+function backtr(laby) {
+  var stack = [{ x: 0, y: 0 }];
+  laby[0][0].v = true;
+  while (stack.length > 0) {
+    var x = stack[stack.length - 1].x;
+    var y = stack[stack.length - 1].y;
+    var as = [];
+    if (x > 0)  as.push({ d: "w", d2: "e", x: x-1, y: y   });
+    if (y > 0)  as.push({ d: "n", d2: "s", x: x  , y: y-1 });
+    if (x < xx-1) as.push({ d: "e", d2: "w", x: x+1, y: y   });
+    if (y < yy-1) as.push({ d: "s", d2: "n", x: x  , y: y+1 });
+    as = as.filter(a => !laby[a.x][a.y].v);
+    var al = as.length;
+    if (al == 0) { stack.pop(); continue; }
+    var i = Math.floor(Math.random() * al);
+    laby[x][y].ws[as[i].d] = false;
+    var x2 = as[i].x, y2 = as[i].y;
+    laby[x2][y2].ws[as[i].d2] = false;
+    laby[x2][y2].v = true;
+    stack.push({ x: x2, y: y2 });
+  }
+}
+
+function draw(laby) {
+  var dd = Array(xx*yy).fill(0)
+    .map((_,i) => {
+      var x = Math.floor(i/yy), y = i%yy;
+      return { x: x, y: y, c: laby[x][y] };
+    })
+  ;
+  d3.select("#svg").selectAll("g.cell")
+    .data(dd)
+    .join(en => {
+      en.append("g").classed("cell", true)
+        .attr("transform", d => "translate("+(csize*d.x)+","+(csize*d.y)+")")
+        .call(s => {
+          s.append("rect")
+            .attr("width", csize)
+            .attr("height", csize)
+            .attr("fill", "white")
+          ;
+        })
+        .call(s => {
+          s.selectAll("rect.wall")
+            .data(d => ["n","w","s","e"]
+              .map(x => ({
+                d: x,
+                x: x == "w" ? (- bsize/2) : x == "e" ? (csize - bsize/2) : 0,
+                y: x == "n" ? (- bsize/2) : x == "s" ? (csize - bsize/2) : 0,
+                ww: x == "w" || x == "e" ? bsize : csize,
+                hh: x == "n" || x == "s" ? bsize : csize,
+                w: d.c.ws[x]
+              }))
+              .filter(x => x.w)
+            )
+            .join(en => {
+              en.append("rect").classed("wall", true)
+                .attr("x", d => d.x)
+                .attr("y", d => d.y)
+                .attr("width", d => d.ww)
+                .attr("height", d => d.hh)
+                .attr("fill", "black")
+            })
+        })
+      ;
+    })
+  ;
+}
+
+function init_ball(pos) {
+  d3.select("#svg")
+    .append("g").attr("id", "ball")
+    .datum(pos)
+    .attr("transform", d =>
+      "translate("+ (csize/2 + csize*d.x) +","+ (csize/2 + csize*d.y) +")"
+    )
+    .append("circle")
+    .attr("fill", "crimson")
+    .attr("r", brad)
+  ;
+}
+
+function move_ball(pos, ender) {
+  d3.select("#ball")
+    .datum(pos)
+    .transition()
+    .duration(60)
+    .ease(d3.easeLinear)
+    .on("end", ender)
+    .attr("transform", d =>
+      "translate("+ (csize/2 + csize*d.x) +","+ (csize/2 + csize*d.y) +")"
+    )
+  ;
+}
+
+function player() {
+  var pos = { x: 0, y: 0 };
+  var listening = true, curdir, nextdir;
+  init_ball(pos);
+
+  function go() {
+    if (! listening) return;
+    if (! laby[pos.x][pos.y].ws[nextdir]) curdir = nextdir;
+    if (laby[pos.x][pos.y].ws[curdir]) return;
+    switch (curdir) {
+      case "n": pos.y--; break;
+      case "s": pos.y++; break;
+      case "w": pos.x--; break;
+      case "e": pos.x++; break;
+    }
+    listening = false;
+    move_ball(pos, () => { listening = true; go(); });
+  }
+
+  d3.select("body")
+    .on("keydown", () => {
+      switch (d3.event.code) {
+        case "ArrowLeft" : case "KeyJ": nextdir = "w"; go(); break;
+        case "ArrowUp"   : case "KeyI": nextdir = "n"; go(); break;
+        case "ArrowRight": case "KeyL": nextdir = "e"; go(); break;
+        case "ArrowDown" : case "KeyK": nextdir = "s"; go(); break;
+      }
+    })
+  ;
+}
+
+backtr(laby);
+draw(laby);
+
+player();
+
+</script>
+</body>
+</html>
