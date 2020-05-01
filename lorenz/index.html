@@ -1,0 +1,95 @@
+<html>
+<head></head>
+<body>
+<canvas id="canv"></canvas>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+
+var border = 0;
+var size = Math.min(window.innerWidth, window.innerHeight) - border * 2;
+var ww = size;
+var hh = size;
+
+d3.select("body")
+  .style("margin", "0")
+  .style("display", "flex")
+  .style("align-items", "center")
+  .style("justify-content", "center")
+  .style("background", "black")
+  .on("click",
+    () => d3.select("body")
+      .node().requestFullscreen()
+  )
+;
+
+d3.select("#canv")
+  .attr("width", ww)
+  .attr("height", hh)
+  .style("border-style", "solid")
+  .style("border-width", border)
+  .style("margin", "0")
+;
+
+var ctx = document.getElementById("canv").getContext("2d");
+
+function mapcoords(v, p) {
+  return {
+    x: (p.x - v.w) / (v.e - v.w) * ww,
+    y: (-(p.y - v.s) / (v.n - v.s) + 1) * hh
+  }
+}
+
+function pix(p, c) {
+  var m = mapcoords({ n: 50, s: 0, w: -25, e: 25 }, p);
+  ctx.fillStyle = c;
+  ctx.fillRect(m.x, m.y, 1, 1);
+}
+
+function go() {
+  var s = {
+    x: Math.random(),
+    y: Math.random(),
+    z: Math.random(),
+    cl: 50,
+    ca: Math.random() * 200 - 100,
+    cb: Math.random() * 200 - 100
+  };
+
+  function next(s) {
+    var P = 10, R = 28, B = 8/3;
+    var dt = 0.001;
+    var dx = P * (s.y - s.x) * dt;
+    var dy = (R * s.x - s.y - s.x * s.z) * dt;
+    var dz = (s.x * s.y - B * s.z) * dt;
+    s.x += dx;
+    s.y += dy;
+    s.z += dz;
+  }
+
+  function nxcol(s) {
+    function clip(x, min, max) { return x > max ? max : x < min ? min : x; }
+
+    s.cl = clip(s.cl + (Math.random() - 0.5) / 10, 0, 150);
+    s.ca = clip(s.ca + (Math.random() - 0.5) / 10, -100, 100);
+    s.cb = clip(s.cb + (Math.random() - 0.5) / 10, -100, 100);
+  }
+
+  function proj(s) { return { x: s.x, y: s.z }; }
+
+  function step() {
+    for (var i=0; i<1000; i++) {
+      next(s);
+      nxcol(s);
+      pix(proj(s), d3.lab(s.cl, s.ca, s.cb));
+    }
+    requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
+}
+
+go();
+
+</script>
+</body>
+</html>
