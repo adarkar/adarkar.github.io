@@ -1,0 +1,135 @@
+<html>
+<head></head>
+<body>
+
+<svg id="svg" width="1000" height="1000"></svg>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+
+function mkcard_n(n) {
+  return n == 0 ? "A" : n < 10 ? ""+(n+1) : ["J", "Q", "K"][n-10];
+}
+
+function mkcard_s(s) {
+  return ["\u2661", "\u2662", "\u2663", "\u2660"][s];
+}
+
+function cardcomp(c1, c2) {
+  if (c1.n < c2.n) return  1;
+  if (c1.n > c2.n) return -1;
+  if (c1.s < c2.s) return  1;
+  if (c1.s > c2.s) return -1;
+}
+
+function cardsort3(c1, c2, c3) {
+  if (cardcomp(c1,c2) < 0) [c1,c2] = [c2,c1];
+  if (cardcomp(c2,c3) < 0) [c2,c3] = [c3,c2];
+  if (cardcomp(c1,c2) < 0) [c1,c2] = [c2,c1];
+  return [c1,c2,c3];
+}
+
+function choose4(cs) {
+  var ss = Array(5).fill(0);
+  var mm = Array(4).fill(0);
+  var i;
+  for (i=0; ss[cs[i].s]++<1; mm[cs[i].s]=i++);
+  var s = cs[i].s;
+  var j = mm[s];
+  var d = (13 + cs[i].n - cs[j].n) % 13;
+  var [x,b,d] = d <= 6 ? [i,j,d] : [j,i,13-d];
+  var ks = [];
+  for (var k=0; k<5; k++) if (k!=i && k!=j) ks.push(cs[k]);
+  var [c1,c2,c3] = cardsort3(ks[0], ks[1], ks[2]);
+  if (d%2 == 1) [c2,c3] = [c3,c2];
+  if (d > 2) [c1,c2,c3] = [c2,c1,c3];
+  if (d > 4) [c1,c2,c3] = [c1,c3,c2];
+  return [cs[b],c1,c2,c3];
+}
+
+var st = {
+  cs: Array(13*4).fill(0).map((_,i)=>({n: i%13, s: Math.floor(i/13), sel: false })),
+  nsel: 0,
+  sel: [],
+  c4: []
+};
+
+function draw() {
+  var ww = 50, hh = 80, pad = 10;
+
+  d3.select("#svg")
+    .selectAll("g.r_card").data(st.cs)
+    .join(en => en
+      .append("g").classed("r_card", true)
+      .attr("transform", d => "translate("+(50+(ww+pad)*d.n)+","+(50+(hh+pad)*d.s)+")")
+      .call(s =>
+        s.append("rect")
+          .attr("x", d => 0)
+          .attr("y", d => 0)
+          .attr("width", ww)
+          .attr("height", hh)
+          .style("fill", "beige")
+          .style("stroke", "black")
+          .on("click", d => { d.sel = true; st.nsel++; update(d); })
+      )
+      .call(s =>
+        s.append("text")
+          .attr("text-anchor", "middle").attr("dy", "0.25em")
+          .attr("x", ww/2).attr("y", hh/2)
+          .style("fill", d => d.s < 2 ? "red" : "black")
+          .style("cursor", "default")
+          .attr("pointer-events", "none")
+          .text(d => mkcard_n(d.n) + " " + mkcard_s(d.s))
+      )
+    )
+    .call(s => {
+      s.select("rect").style("stroke-width", d => d.sel ? "2" : "0")
+    })
+  ;
+
+  d3.select("#svg")
+    .selectAll("g.r_c4").data(st.c4)
+    .join(en => en
+      .append("g").classed("r_c4", true)
+      .attr("transform", (d,i) => "translate("+(50+(ww+pad)*i)+","+(50+(hh+pad)*5+")"))
+      .call(s =>
+        s.append("rect")
+          .attr("x", d => 0)
+          .attr("y", d => 0)
+          .attr("width", ww)
+          .attr("height", hh)
+          .style("fill", "plum")
+          .style("stroke", "black")
+          .style("stroke-width", "0")
+      )
+      .call(s =>
+        s.append("text")
+          .attr("text-anchor", "middle").attr("dy", "0.25em")
+          .attr("x", ww/2).attr("y", hh/2)
+          .style("fill", d => d.s < 2 ? "red" : "black")
+          .style("cursor", "default")
+          .attr("pointer-events", "none")
+          .text(d => mkcard_n(d.n) + " " + mkcard_s(d.s))
+      )
+    )
+  ;
+}
+
+function update(d) {
+  st.sel.push(d);
+  if (st.nsel == 5) {
+    st.c4 = choose4(st.sel);
+  }
+  if (st.nsel == 6) {
+    st.nsel = 0;
+    st.sel = [];
+    st.c4 = [];
+    st.cs.map(d => d.sel = false);
+  }
+  draw();
+}
+
+draw();
+
+</script>
+</body>
+</html>
