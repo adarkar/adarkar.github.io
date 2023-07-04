@@ -1,0 +1,61 @@
+<html>
+<head></head>
+<body bgcolor="black">
+<svg id="svg" width="100%" height="100%"></svg>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script>
+
+var data = [{ca: 0, cb: 0}];
+
+function go() {
+  data[0].ca += Math.random() * 40 - 20;
+  if (data[0].ca > 100) data[0].ca = 100;
+  if (data[0].ca < -100) data[0].ca = -100;
+  data[0].cb += Math.random() * 40 - 20;
+  if (data[0].cb > 100) data[0].cb = 100;
+  if (data[0].cb < -100) data[0].cb = -100;
+
+  d3.select("#svg")
+    .selectAll("g.gg").data(data)
+    .join(en => en
+      .append("g").classed("gg", true)
+        .attr("transform", () => {
+          var x = window.innerWidth / 2;
+          var y = window.innerHeight / 2;
+          return "translate("+x+", "+y+")";
+      })
+      .call(s =>
+        s.append("circle").classed("ce", true)
+          .attr("r", "30%")
+          .style("fill", "white")
+      )
+      .call(s =>
+        s.append("text")
+          .text(getD())
+          .attr("text-anchor", "middle").attr("dy", "0.25em")
+          .attr("x", 0).attr("y", 0)
+          .attr("font-size", "500%")
+          .style("fill", "white")
+      )
+    )
+    .select("circle.ce")
+    .transition(500).ease(d3.easeLinear)
+    .style("fill", d => d3.lab(10, d.ca, d.cb));
+}
+
+function getD() {
+  var x = (new Date(2024, 4, 11) - new Date()) / (60*60*24*1000);
+  x = Math.ceil(x);
+  return `- ${x}`;
+}
+
+function run() {
+  go();
+  setTimeout(run, 500);
+}
+
+run();
+
+</script>
+</body>
+</html>
