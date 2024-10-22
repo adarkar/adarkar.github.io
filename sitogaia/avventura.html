@@ -1,0 +1,192 @@
+<html>
+<head>
+<link rel="stylesheet" href="stile.css">
+<title> Avventura - Settim∀rte </title>
+</head>
+
+<body>
+
+<div class="centrato barra">
+  <div style="position: absolute; left: 0px;">
+    <a href="film.html">
+      <img src="i/logogiusto.jpg" style="height: 60px;"> </img>
+    </a>
+  </div>
+  <div class="sezione dropdown">
+    GENERE
+    <div class="menu">
+      <div> <a href="animazione.html"> Animazione </a> </div>
+      <div> <a href="azione.html"> Azione     </a> </div>
+      <div> <a href="avventura.html"> Avventura  </a> </div>
+      <div> <a href="biografico.html"> Biografico </a> </div>
+      <div> <a href="comico.html"> Comico     </a> </div>
+      <div> <a href="documentario.html"> Documentario </a> </div>
+      <div> <a href="drammatico.html"> Drammatico </a> </div>
+      <div> <a href="fantascienza.html"> Fantascienza </a> </div>
+      <div> <a href="fantasy.html"> Fantasy </a> </div>
+      <div> <a href="horror.html"> Horror </a> </div>
+      <div> <a href="musical.html"> Musical </a> </div>
+      <div> <a href="storico.html"> Storico </a> </div>
+      <div> <a href="thriller.html"> Thriller </a> </div>
+    </div>
+  </div>
+  <div class="sezione"> <a href="piuvisti.html"> I PIÙ VISTI </a> </div>
+  <div class="sezione"> <a href="oscar.html">    PREMI OSCAR </a> </div>
+  <div class="sezione"> <a href="storia.html">   INFORMAZIONI </a> </div>
+</div>
+
+<div class="centrato titolo">
+  Avventura
+</div>
+
+<div id="filmbox">
+
+ <div style="margin: 20px 0px; width:100%; overflow-x: scroll; white-space: nowrap;">
+  <a  v-for="film in films" v-bind:href="'#'+film.name"> <img v-if="film.imgscroll" v-bind:src="'i/' + film.imgscroll" height="500"> </img> </a>
+ </div>
+
+  <div v-for="film in films" class="filmdescr-box" v-bind:id="film.name">
+    <div class="filmdescr-title">
+      {{ film.title }}
+    </div>
+
+    <div class="filmdescr-main">
+      <div class="filmdescr-imgdiv">
+        <img v-bind:src="'i/' + film.locandina"> </img>
+      </div>
+
+      <div class="filmdescr-col">
+        <div class="filmdescr-text">
+          {{ film.descr }}
+        </div>
+
+        <div class="filmdescr-fill"> </div>
+
+        <div class="filmdescr-botrow">
+          <div v-if="oscar" class="filmdescr-oscar">
+            <div class="counter">
+              <span> {{ film.oscar }} </span>
+              <span> &#x1f3c6; </span>
+            </div>
+          </div>
+  
+          <div class="filmdescr-fill"> </div>
+
+          <div class="filmdescr-trailer" v-on:click="show_trailer(film)" style="cursor: pointer;">
+            Trailer
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="trailer.visible">
+    <div v-on:click="hide_trailer()" style="background-color: black; opacity: 80%; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    </div>
+    <div style="position: fixed; top: 10%; left: 10%; width: 80%; height: 80%;">
+      <div style="position: relative; background-color: black; padding-top: 56.25%; top: 0;">
+        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                v-bind:src="'https://www.youtube.com/embed/' + trailer.codice"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="vue.js"></script>
+<script>
+
+var films = [
+  { title: "Jumanji - Benvenuti nella Giungla"
+  , descr: "Un gruppo di liceali si ritrova catapultato in un misterioso videogioco, assumendo le sembianze dei propri avatar adulti. I quattro amici sono costretti ad affrontare difficili avventure per sopravvivere ai pericoli della giungla."
+  , locandina: "jumanji.jpg"
+  , name: "jumanji"
+  , codice_youtube_trailer: "L7B1OYlD9q8"
+  },
+
+  { title: "Jumanji: The Next Level"
+  , descr: "Quando Spencer torna nel fantastico mondo di Jumanji, gli amici Martha, Fridge e Bethany rientrano nel gioco per riportarlo a casa, ma scoprono che esistono più ostacoli e più pericoli da superare di quanti ne ricordassero."
+  , locandina: "jumanji2.jpg"
+  , codice_youtube_trailer: "qUk_aGLtKec"
+  },
+
+  { title: "Pirati dei Caraibi - La Maledizione della Prima Luna"
+  , descr: "La figlia del governatore viene rapita da un pirata malvagio. Will Turner, amico d'infanzia della ragazza segretamente innamorato di lei, si unisce a Jack Sparrow, un pirata vagabondo, per portare in salvo la fanciulla."
+  , locandina: "pirati.jpg"
+  , codice_youtube_trailer: "QZZirgl4lm8&t=31s"
+  },
+
+ { title: "Pirati dei Caraibi - La Maledizione del Forziere Fantasma"
+  , descr: "Jack Sparrow ha contratto un debito con Davey Jones e la sua ciurma di marinai. Se non vuole servire per l'eternità il capitano della nave fantasma, Jack deve assolutamente trovare una soluzione."
+  , locandina: "pirati2.jpg"
+  , codice_youtube_trailer: "TP94mPKSK4o"
+  },
+
+ { title: "Pirati dei Caraibi - Ai Confini del Mondo"
+  , descr: "Will Turner, Elizabeth Swann e Capitan Barbossa s'imbarcano nel tentativo di unirsi ai nove pirati lord della fratellanza, per sconfiggere Lord Cutler Beckett della Compagnia Delle Indie Orientali."
+  , locandina: "pirati3.jpg"
+  , codice_youtube_trailer: "TWr1e21T3so"
+  },
+
+ { title: "Pirati dei Caraibi - Oltre i Confini del Mare"
+  , descr: "In compagnia di Barbarossa, il capitano Jack Sparrow parte alla ricerca della Fontana della giovinezza. I due scoprono però che anche Barbanera e sua figlia hanno intrapreso la stessa missione."
+  , locandina: "pirati4.jpg"
+  , codice_youtube_trailer: "g1cQlLX4kS0"
+  },
+
+ { title: "Pirati dei Caraibi - La Vendetta di Salazar"
+  , descr: "Il Capitano Salazar, insieme al suo equipaggio di marinai fantasma, riesce a uscire dal Triangolo del Diavolo. L'unica speranza di salvezza per Jack Sparrow è il Tridente di Poseidone, ma per recuperarlo è costretto a stringere un'insolita alleanza."
+  , locandina: "pirati5.jpg"
+  , codice_youtube_trailer: "gqbpwdP6mYE"
+  ,name: "pirati5"
+  , imgscroll: "piratiscroll.jpg"
+  },
+
+ { title: "Le Cronache di Narnia - il leone, la strega e l'armadio"
+  , descr: "Quattro fratelli scoprono una porta misteriosa che li porta in un universo incantato dove una strega ha lanciato un tremendo incantesimo."
+  , locandina: "cdn.jpg"
+  , codice_youtube_trailer: "eU0kVmTA6-4"
+  },
+
+{ title: "Le Cronache di Narnia - il principe Caspian"
+  , descr: "I fratelli Pevensie uniscono le loro forze a quelle dei coraggiosi abitanti di Narnia."
+  , locandina: "cdn2.jpg"
+  , codice_youtube_trailer: "Y9E2Nu80xpo"
+  },
+
+{ title: "Le Cronache di Narnia - il viaggio del veliero"
+  , descr: "Visitando il loro fastidioso cugino, Eustace, Lucy e Edmund Pevensie trovano un dipinto di una maestosa nave. Improvvisamente, il quadro prende vita e attira i giovani al suo interno, trasportandoli a Narnia, dove incontrano il loro vecchio amico, Re Caspian. Questi è in una missione per trovare i sette signori perduti di Telmar, le cui spade sono le uniche in grado di salvare il paese da una nebbia verde."
+  , locandina: "cdn3.jpg"
+  , codice_youtube_trailer: "ZhLJEwjFNgo"
+  , name: "cdn3"
+  ,imgscroll: "cdnscroll.jpg"
+  },
+
+
+
+
+
+];
+
+var vueapp = new Vue({
+  el: "#filmbox",
+  data: {
+    films: films,
+    trailer: { visible: false, codice: "" },
+    oscar:false
+  },
+  methods: {
+    show_trailer: function (f) {
+      this.trailer.visible = true;
+      this.trailer.codice = f.codice_youtube_trailer;
+    },
+    hide_trailer: function () { this.trailer.visible = false; }
+  }
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<html>
+<head>
+<link rel="stylesheet" href="stile.css">
+<title> Horror - Settim∀rte </title>
+</head>
+
+<body>
+
+<div class="centrato barra">
+  <div style="position: absolute; left: 0px;">
+    <a href="film.html">
+      <img src="i/logogiusto.jpg" style="height: 60px;"> </img>
+    </a>
+  </div>
+  <div class="sezione dropdown">
+    GENERE
+    <div class="menu">
+      <div> <a href="animazione.html"> Animazione </a> </div>
+      <div> <a href="azione.html"> Azione     </a> </div>
+      <div> <a href="avventura.html"> Avventura  </a> </div>
+      <div> <a href="biografico.html"> Biografico </a> </div>
+      <div> <a href="comico.html"> Comico     </a> </div>
+      <div> <a href="documentario.html"> Documentario </a> </div>
+      <div> <a href="drammatico.html"> Drammatico </a> </div>
+      <div> <a href="fantascienza.html"> Fantascienza </a> </div>
+      <div> <a href="fantasy.html"> Fantasy </a> </div>
+      <div> <a href="horror.html"> Horror </a> </div>
+      <div> <a href="musical.html"> Musical </a> </div>
+      <div> <a href="storico.html"> Storico </a> </div>
+      <div> <a href="thriller.html"> Thriller </a> </div>
+    </div>
+  </div>
+  <div class="sezione"> <a href="piuvisti.html"> I PIÙ VISTI </a> </div>
+  <div class="sezione"> <a href="oscar.html">    PREMI OSCAR </a> </div>
+  <div class="sezione"> <a href="storia.html">   INFORMAZIONI </a> </div>
+</div>
+
+<div class="centrato titolo">
+  Horror
+</div>
+
+<div id="filmbox">
+
+ <div style="margin: 20px 0px; width:100%; overflow-x: scroll; white-space: nowrap;">
+  <a  v-for="film in films" v-bind:href="'#'+film.name"> <img v-if="film.imgscroll" v-bind:src="'i/' + film.imgscroll" height="500"> </img> </a>
+ </div>
+
+  <div v-for="film in films" class="filmdescr-box" v-bind:id="film.name">
+    <div class="filmdescr-title">
+      {{ film.title }}
+    </div>
+
+    <div class="filmdescr-main">
+      <div class="filmdescr-imgdiv">
+        <img v-bind:src="'i/' + film.locandina"> </img>
+      </div>
+
+      <div class="filmdescr-col">
+        <div class="filmdescr-text">
+          {{ film.descr }}
+        </div>
+
+        <div class="filmdescr-fill"> </div>
+
+        <div class="filmdescr-botrow">
+          <div v-if="oscar" class="filmdescr-oscar">
+            <div class="counter">
+              <span> {{ film.oscar }} </span>
+              <span> &#x1f3c6; </span>
+            </div>
+          </div>
+  
+          <div class="filmdescr-fill"> </div>
+
+          <div class="filmdescr-trailer" v-on:click="show_trailer(film)" style="cursor: pointer;">
+            Trailer
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="trailer.visible">
+    <div v-on:click="hide_trailer()" style="background-color: black; opacity: 80%; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    </div>
+    <div style="position: fixed; top: 10%; left: 10%; width: 80%; height: 80%;">
+      <div style="position: relative; background-color: black; padding-top: 56.25%; top: 0;">
+        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                v-bind:src="'https://www.youtube.com/embed/' + trailer.codice"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="vue.js"></script>
+<script>
+
+var films = [
+  { title: "Annabelle"
+  , descr: "I membri di una setta satanica assaltano la casa di una pacifica coppia, John e Mia, e, invocando un demone, trasformano una bambola d'epoca in un oggetto capace di diffondere il male supremo."
+  , locandina: "annabelle.jpg"
+  , codice_youtube_trailer: "ZNY_rZN_AU0"
+  },
+
+  { title: "Annabelle 2 - Creation"
+  , descr: "Molti anni dopo la morte della propria figlia, un fabbricante di giocattoli e sua moglie accolgono in casa una suora e sei ragazze provenienti da un orfanotrofio. Ma Annabelle, una bambola posseduta da un demone, inizia ad attaccarli."
+  , locandina: "annabelle2.jpg"
+  , codice_youtube_trailer: "l6C5QQbgjlg"
+  },
+
+  { title: "Annabelle 3"
+  , descr: "Gli esperti di paranormale Ed e Lorraine Warren tengono sotto chiave, al sicuro, una bambola posseduta. La giovane figlia della coppia e le sue amiche, però, diventano presto vittime dei demoni risvegliati dall'essere maligno."
+  , locandina: "annabelle3.jpg"
+  , codice_youtube_trailer: "Fx3pRpByflc"
+  , name: "anna"
+  , imgscroll: "annabellescroll.jpg"
+  },
+
+  { title: "It"
+  , descr: "Un gruppo di adolescenti scopre l'esistenza di un'entità malvagia che si nutre delle paure degli esseri umani e che ha le sembianze di un pagliaccio di nome Pennywise. L'essere, che dimora nelle profondità della rete fognaria, è solo uno dei volti della creatura millenaria nota come It, un mostro senza forma che si risveglia ciclicamente per mietere vittime tra i bambini della città. Per sconfiggerlo, i ragazzi devono restare uniti e mantenere vivo il sentimento di amicizia che li lega."
+  , locandina: "it.jpg"
+  , codice_youtube_trailer: "A1x1s__vlKU"
+  },
+
+  { title: "It - Capitolo 2"
+  , descr: "Nella sonnacchiosa cittadina di Derry, il malvagio clown Pennywise ritorna dopo ventisette anni per tormentare di nuovo i membri del Club dei Perdenti, che da tempo si sono persi di vista."
+  , locandina: "it2.jpg"
+  , codice_youtube_trailer: "cklj05h6FCA"
+  , name: "it"
+  , imgscroll: "itscroll.jpg"
+  },
+
+  { title: "The Witch"
+  , descr: "Nel 1630, in Inghilterra, una famiglia di contadini accusa la giovane figlia di stregoneria quando il figlio più piccolo scompare misteriosamente."
+  , locandina: "witch.jpg"
+  , codice_youtube_trailer: "ZE0LxoT9F70"
+  },
+];
+
+var vueapp = new Vue({
+  el: "#filmbox",
+  data: {
+    films: films,
+    trailer: { visible: false, codice: "" },
+    oscar:false
+  },
+  methods: {
+    show_trailer: function (f) {
+      this.trailer.visible = true;
+      this.trailer.codice = f.codice_youtube_trailer;
+    },
+    hide_trailer: function () { this.trailer.visible = false; }
+  }
+});
+
+</script>
+</body>
+</html>

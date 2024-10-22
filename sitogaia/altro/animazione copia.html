@@ -1,0 +1,145 @@
+<html>
+<head>
+<link rel="stylesheet" href="stile.css">
+</head>
+
+<body>
+
+<div style="background-color:#202020; padding: 20px; margin-bottom: 30px;" class="centrato">
+  <div style="position: absolute; left: 0px;">
+    <a href="film.html">
+      <img src="i/leonefilm.jpg" style="height: 60px;"> </img>
+    </a>
+  </div>
+  <div class="sezione dropdown">
+    GENERE
+    <div class="menu">
+      <div> <a href="animazione.html"> Animazione </a> </div>
+      <div> <a href="azione.html"> Azione     </a> </div>
+      <div> <a href="2"> Avventura  </a> </div>
+      <div> <a href="4"> Biografico </a> </div>
+      <div> <a href="3"> Comico     </a> </div>
+      <div> <a href="4"> Documentario </a> </div>
+      <div> <a href="4"> Drammatico </a> </div>
+      <div> <a href="4"> Fantascienza </a> </div>
+      <div> <a href="4"> Fantasy </a> </div>
+      <div> <a href="4"> Horror </a> </div>
+      <div> <a href="4"> Musical </a> </div>
+      <div> <a href="4"> Storico </a> </div>
+      <div> <a href="4"> Thriller </a> </div>
+    </div>
+  </div>
+  <div class="sezione"> <a href="piuvisti.html"> I PIÙ VISTI </a> </div>
+  <div class="sezione"> <a href="oscar.html">    PREMI OSCAR </a> </div>
+</div>
+
+<div class="centrato titolo">
+  AZIONE
+</div>
+
+<div id="filmbox">
+
+ <div style="margin: 20px 0px; width:100%; overflow-x: scroll; white-space: nowrap;">
+  <a  v-for="film in films" v-bind:href="'#'+film.name"> <img v-if="film.imgscroll" v-bind:src="'i/' + film.imgscroll" height="500"> </img> </a>
+ </div>
+
+  <div v-for="film in films" class="filmdescr-box" v-bind:id="film.name">
+    <div class="filmdescr-title">
+      {{ film.title }}
+    </div>
+
+    <div class="filmdescr-main">
+      <div class="filmdescr-imgdiv">
+        <img v-bind:src="'i/' + film.locandina"> </img>
+      </div>
+
+      <div class="filmdescr-col">
+        <div class="filmdescr-text">
+          {{ film.descr }}
+        </div>
+
+        <div class="filmdescr-fill"> </div>
+
+        <div class="filmdescr-botrow">
+          <div class="filmdescr-like">
+            <div class="counter">
+              <span> {{ film.likes }} </span>
+              <span v-on:click="like(film)" style="cursor: pointer;"> &#x1f44d; </span>
+            </div>
+          </div>
+
+          <div class="filmdescr-fill"> </div>
+
+          <div class="filmdescr-trailer" v-on:click="show_trailer(film)" style="cursor: pointer;">
+            Trailer
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="trailer.visible">
+    <div style="background-color: black; opacity: 80%; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    </div>
+    <div v-on:click="hide_trailer()" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+      <div style="position: relative; background-color: black; padding-top: 56.25%; top: 20%;">
+        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                v-bind:src="'https://www.youtube.com/embed/' + trailer.codice"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="vue.js"></script>
+<script>
+var films = [
+  { title: "Bad Boys for Life"
+  , descr: "Due poliziotti di vecchia scuola, Mike Lowrey e Marcus Burnett, fanno squadra con una unità d'élite per fermare le attività di un pericoloso criminale di Miami a capo del locale cartello della droga."
+  , locandina: "badboysforlife.jpg"
+  , codice_youtube_trailer: "9U7iQWzXi1s"
+  , name: "badboysforlife"
+  , imgscroll: "badboysforlifescroll.jpg"
+  },
+
+  { title: "Baby Driver"
+  , descr: "Un giovane pilota è costretto a lavorare per un boss del crimine e deve usare tutta la propria abilità quando una rapina, destinata a fallire, minaccia la sua vita e la sua libertà."
+  , locandina: "babydriver.jpg"
+  , codice_youtube_trailer: "oFiLrgCuFXo"
+ },
+
+{ title: "Minions"
+  , descr: "I minions esistono da sempre ed hanno un unico scopo nella vita: servire il padrone più cattivo al mondo. Attraverso differenti epoche, queste creature speciali lavorano per T Rex, un uomo preistorico, un faraone d'Egitto, il conte Dracula ed anche Napoleone, ma ogni volta in maniera accidentale causano la morte del loro sovrano. Visti i danni combinati nei secoli, l'unica soluzione appare quella di trasferirsi in una grotta sperduta."
+   , locandina: "minions.jpg"
+  , codice_youtube_trailer: "mdg5l30qR-A"
+  },
+
+{ title: "Up"
+  , descr: "Carl Fredricksen, un venditore di pallonicini di 78 anni sta per esaudire il sogno di una vita: volare in Sud America con la propria casa. Accompagnato nel viaggio da un boyscout di 8 anni, i due affrontano mostri e furfanti di ogni tipo."
+   , locandina: "up.jpg"
+  , codice_youtube_trailer: "wt8-2pSuRHE"
+  },
+];
+
+var vueapp = new Vue({
+  el: "#filmbox",
+  data: {
+    films: films,
+    trailer: { visible: false, codice: "" }
+  },
+  methods: {
+    like: function (f) { f.likes++; },
+    show_trailer: function (f) {
+      this.trailer.visible = true;
+      this.trailer.codice = f.codice_youtube_trailer;
+    },
+    hide_trailer: function () { this.trailer.visible = false; }
+  }
+});
+
+</script>
+</body>
+</html>

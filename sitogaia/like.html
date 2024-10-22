@@ -1,0 +1,30 @@
+<html>
+<head>
+</head>
+<body>
+
+<div class="counter">
+<div class="n"> 0
+</div>
+<button>
+like
+</button>
+</div>
+
+<div class="counter">
+<div class="n"> 0
+</div>
+<button>
+like
+</button>
+</div>
+
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+var likes = 0;
+d3.select(".counter button").on("click", () => { d3.select(".counter .n").text(++likes); })
+</script>
+
+</body>
+</html>

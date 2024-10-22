@@ -1,0 +1,130 @@
+<html>
+<head>
+<link rel="stylesheet" href="stile.css">
+<title> Fantascienza - Settim∀rte </title>
+</head>
+
+<body>
+
+<div class="centrato barra">
+  <div style="position: absolute; left: 0px;">
+    <a href="film.html">
+      <img src="i/logogiusto.jpg" style="height: 60px;"> </img>
+    </a>
+  </div>
+  <div class="sezione dropdown">
+    GENERE
+    <div class="menu">
+      <div> <a href="animazione.html"> Animazione </a> </div>
+      <div> <a href="azione.html"> Azione     </a> </div>
+      <div> <a href="avventura.html"> Avventura  </a> </div>
+      <div> <a href="biografico.html"> Biografico </a> </div>
+      <div> <a href="comico.html"> Comico     </a> </div>
+      <div> <a href="documentario.html"> Documentario </a> </div>
+      <div> <a href="drammatico.html"> Drammatico </a> </div>
+      <div> <a href="fantascienza.html"> Fantascienza </a> </div>
+      <div> <a href="fantasy.html"> Fantasy </a> </div>
+      <div> <a href="horror.html"> Horror </a> </div>
+      <div> <a href="musical.html"> Musical </a> </div>
+      <div> <a href="storico.html"> Storico </a> </div>
+      <div> <a href="thriller.html"> Thriller </a> </div>
+    </div>
+  </div>
+  <div class="sezione"> <a href="piuvisti.html"> I PIÙ VISTI </a> </div>
+  <div class="sezione"> <a href="oscar.html">    PREMI OSCAR </a> </div>
+  <div class="sezione"> <a href="storia.html">   INFORMAZIONI </a> </div>
+</div>
+
+<div class="centrato titolo">
+  Fantascienza
+</div>
+
+<div id="filmbox">
+
+ <div style="margin: 20px 0px; width:100%; overflow-x: scroll; white-space: nowrap;">
+  <a  v-for="film in films" v-bind:href="'#'+film.name"> <img v-if="film.imgscroll" v-bind:src="'i/' + film.imgscroll" height="500"> </img> </a>
+ </div>
+
+  <div v-for="film in films" class="filmdescr-box" v-bind:id="film.name">
+    <div class="filmdescr-title">
+      {{ film.title }}
+    </div>
+
+    <div class="filmdescr-main">
+      <div class="filmdescr-imgdiv">
+        <img v-bind:src="'i/' + film.locandina"> </img>
+      </div>
+
+      <div class="filmdescr-col">
+        <div class="filmdescr-text">
+          {{ film.descr }}
+        </div>
+
+        <div class="filmdescr-fill"> </div>
+
+        <div class="filmdescr-botrow">
+          <div v-if="oscar" class="filmdescr-oscar">
+            <div class="counter">
+              <span> {{ film.oscar }} </span>
+              <span> &#x1f3c6; </span>
+            </div>
+          </div>
+  
+          <div class="filmdescr-fill"> </div>
+
+          <div class="filmdescr-trailer" v-on:click="show_trailer(film)" style="cursor: pointer;">
+            Trailer
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="trailer.visible">
+    <div v-on:click="hide_trailer()" style="background-color: black; opacity: 80%; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    </div>
+    <div style="position: fixed; top: 10%; left: 10%; width: 80%; height: 80%;">
+      <div style="position: relative; background-color: black; padding-top: 56.25%; top: 0;">
+        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                v-bind:src="'https://www.youtube.com/embed/' + trailer.codice"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="vue.js"></script>
+<script>
+
+var films = [
+  { title: "Interstellar"
+  , descr: "In un futuro non precisato, un drastico cambiamento climatico colpisce duramente l'agricoltura. Il granturco è l'unica coltivazione ancora in grado di crescere ed un gruppo di scienziati è intenzionato ad attraversare lo spazio per trovare nuovi luoghi adatti a coltivarlo."
+  , locandina: "interstellar.jpg"
+  , codice_youtube_trailer: "EIVMVIr3q3Y"
+  },
+
+
+];
+
+var vueapp = new Vue({
+  el: "#filmbox",
+  data: {
+    films: films,
+    trailer: { visible: false, codice: "" },
+    oscar:false
+  },
+  methods: {
+    show_trailer: function (f) {
+      this.trailer.visible = true;
+      this.trailer.codice = f.codice_youtube_trailer;
+    },
+    hide_trailer: function () { this.trailer.visible = false; }
+  }
+});
+
+</script>
+</body>
+</html>
